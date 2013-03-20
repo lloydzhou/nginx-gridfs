@@ -828,11 +828,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     request->headers_out.content_length_n = length;
     if (contenttype != NULL) {
         request->headers_out.content_type.len = strlen(contenttype);
-	if (request->method == NGX_HTTP_HEAD) {
-	    request->headers_out.content_type.data = NULL;
-	} else {
-            request->headers_out.content_type.data = (u_char*)contenttype;
-	}
+        request->headers_out.content_type.data = (u_char*)contenttype;
     }
     else ngx_http_set_content_type(request);
 
@@ -856,11 +852,10 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     }
 
     ngx_http_send_header(request);
-
     // ---------- SEND THE BODY ---------- //
 
     /* Empty file */
-    if (numchunks == 0) {
+    if (numchunks == 0 || request->method == NGX_HTTP_HEAD) {
         /* Allocate space for the response buffer */
         buffer = ngx_pcalloc(request->pool, sizeof(ngx_buf_t));
         if (buffer == NULL) {
