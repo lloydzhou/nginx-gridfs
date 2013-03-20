@@ -866,7 +866,6 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
         request->headers_out.content_encoding->value.data = (u_char *) "gzip";
     }
 
-    ngx_http_send_header(request);
     // ---------- SEND THE BODY ---------- //
 
     /* Empty file */
@@ -887,6 +886,8 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
         out.next = NULL;
         return ngx_http_output_filter(request, &out);
     }
+
+    ngx_http_send_header(request);
     
     cursors = (mongo_cursor **)ngx_pcalloc(request->pool, sizeof(mongo_cursor *) * numchunks);
     if (cursors == NULL) {
