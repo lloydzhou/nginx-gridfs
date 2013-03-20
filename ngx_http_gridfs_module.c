@@ -684,6 +684,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     ngx_uint_t chunksize;
     ngx_uint_t numchunks;
     char* contenttype;
+    char* md5; 
     bson_date_t last_modified;
 
     volatile ngx_uint_t i;
@@ -819,7 +820,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     chunksize = gridfile_get_chunksize(&gfile);
     numchunks = gridfile_get_numchunks(&gfile);
     contenttype = (char*)gridfile_get_contenttype(&gfile);
-
+    md5 = (char*)gridfile_get_md5(&gfile);
     last_modified = gridfile_get_uploaddate(&gfile);
 
     // ---------- SEND THE HEADERS ---------- //
