@@ -820,6 +820,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     chunksize = gridfile_get_chunksize(&gfile);
     numchunks = gridfile_get_numchunks(&gfile);
     contenttype = (char*)gridfile_get_contenttype(&gfile);
+
     md5 = (char*)gridfile_get_md5(&gfile);
     last_modified = gridfile_get_uploaddate(&gfile);
 
@@ -867,6 +868,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     }
 
     // ---------- SEND THE BODY ---------- //
+    ngx_http_send_header(request);
 
     /* Empty file */
     if (numchunks == 0 || request->method == NGX_HTTP_HEAD) {
@@ -887,8 +889,6 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
         return ngx_http_output_filter(request, &out);
     }
 
-    ngx_http_send_header(request);
-    
     cursors = (mongo_cursor **)ngx_pcalloc(request->pool, sizeof(mongo_cursor *) * numchunks);
     if (cursors == NULL) {
       return NGX_HTTP_INTERNAL_SERVER_ERROR;
