@@ -832,8 +832,6 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     }
     else ngx_http_set_content_type(request);
 
-<<<<<<< HEAD
-=======
     // use md5 field as ETag if possible
     if (md5 != NULL) {
         request->headers_out.etag = ngx_list_push(&request->headers_out.headers);
@@ -848,7 +846,6 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
         request->headers_out.etag->value.data = b->start;
     }
     
->>>>>>> 70a4697... fix etag bug: etag should be enclosed by '"'
     // use uploadDate field as last_modified if possible
     if (last_modified) {
         request->headers_out.last_modified_time = (time_t)(last_modified/1000);
