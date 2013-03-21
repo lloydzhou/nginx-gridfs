@@ -874,7 +874,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
             return NGX_HTTP_INTERNAL_SERVER_ERROR;
         }
 
-    return ngx_http_send_header(request); 
+        return ngx_http_send_header(request); 
     }
     
 
