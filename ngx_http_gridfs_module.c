@@ -868,10 +868,18 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     }
 
     // ---------- SEND THE BODY ---------- //
-    ngx_http_send_header(request);
+
+    if (request->method == NGX_HTTP_HEAD) {
+	    if (ngx_http_discard_request_body(request) != NGX_OK) {
+        	return NGX_HTTP_INTERNAL_SERVER_ERROR;
+	    }
+
+	return ngx_http_send_header(request); 
+    }
+    
 
     /* Empty file */
-    if (numchunks == 0 || request->method == NGX_HTTP_HEAD) {
+    if (numchunks == 0) {
         /* Allocate space for the response buffer */
         buffer = ngx_pcalloc(request->pool, sizeof(ngx_buf_t));
         if (buffer == NULL) {
@@ -905,6 +913,11 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     gridfs_clndata = gridfs_cln->data;
     gridfs_clndata->cursors = cursors;
     gridfs_clndata->numchunks = numchunks;
+    rc = ngx_http_send_header(request);
+	
+    if (rc == NGX_ERROR || rc > NGX_OK || request->header_only) {
+        return rc;
+    }
 
     /* Read and serve chunk by chunk */
     for (i = 0; i < numchunks; i++) {
@@ -948,7 +961,6 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
         buffer->last_buf = (i == numchunks-1);
         out.buf = buffer;
         out.next = NULL;
-
         /* Serve the Chunk */
         rc = ngx_http_output_filter(request, &out);
 
