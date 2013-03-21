@@ -870,11 +870,11 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     // ---------- SEND THE BODY ---------- //
 
     if (request->method == NGX_HTTP_HEAD) {
-	    if (ngx_http_discard_request_body(request) != NGX_OK) {
-        	return NGX_HTTP_INTERNAL_SERVER_ERROR;
-	    }
+        if (ngx_http_discard_request_body(request) != NGX_OK) {
+            return NGX_HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-	return ngx_http_send_header(request); 
+    return ngx_http_send_header(request); 
     }
     
 
@@ -914,7 +914,7 @@ static ngx_int_t ngx_http_gridfs_handler(ngx_http_request_t* request) {
     gridfs_clndata->cursors = cursors;
     gridfs_clndata->numchunks = numchunks;
     rc = ngx_http_send_header(request);
-	
+    
     if (rc == NGX_ERROR || rc > NGX_OK || request->header_only) {
         return rc;
     }
